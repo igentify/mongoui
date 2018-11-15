@@ -32,19 +32,19 @@ module.exports = {
     "host": {
       "doc": "The Host the database is accessible from.",
       "format": "*",
-      "default": "localhost",
+      "default": "192.168.19.31",
       "env": "DEP_DB_HOST"
     },
     "port": {
       "doc": "The PORT the database is accessible from.",
       "format": "port",
-      "default": "27017",
+      "default": "31017",
       "env": "DEP_DB_PORT"
     },
     "name": {
       "doc": "The name of the database which will be accessed.",
       "format": "*",
-      "default": "mongoui",
+      "default": "test",
       "env": "DEP_DB_NAME"
     },
     "username": {

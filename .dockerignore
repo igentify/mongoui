@@ -1,0 +1,6 @@
+.sonarlint
+webpack*
+readme.md
+bin/
+test/
+source/

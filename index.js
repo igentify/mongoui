@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 "use strict"
 
-const opn = require('opn')
+// const opn = require('opn')
 
 let log = console.log
 const express = require('express')
@@ -25,6 +25,7 @@ const port = config.api.port
 let dbHostName, dbPortNumber, dbName
 
 dbHostName = config.database.host
+console.log(`dbHostName=${dbHostName}`)
 dbPortNumber = config.database.port
 dbName = config.database.name
 
@@ -133,7 +134,7 @@ if (require.main === module) {
     } else {
       console.log('Mongoui web app is listening on: %s', config.api.port)    
       // Opens the url in the default browser 
-      opn(`http://localhost:${config.api.port}`)
+      // opn(`http://localhost:${config.api.port}`)
     }
   })
 } else {
