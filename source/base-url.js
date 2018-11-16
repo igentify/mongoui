@@ -7,8 +7,10 @@ module.exports.API_URL = formatUrlString(inheritUrl({
 
 console.log(module.exports.API_URL);
 
-function formatUrlString(uri){
-  return `${uri.protocol}://${uri.host}:${uri.port}`;
+function formatUrlString(uri) {
+  var currentLocation = window.location;
+  console.log(`API_URL = ${uri.protocol}://${uri.host}:${uri.port}${currentLocation.pathname}`)
+  return `${uri.protocol}://${uri.host}:${uri.port}${currentLocation.pathname}`;
 }
 
 function inheritUrl(uri){

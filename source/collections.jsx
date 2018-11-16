@@ -10,7 +10,7 @@ module.exports = React.createClass({
   },
   fetch(dbName){
     dbName = dbName || this.props.params.dbName
-    request({url: `${API_URL}/api/dbs/${dbName}/collections`, json: true, withCredentials: false}, (error, response, body) =>{
+    request({url: `${API_URL}api/dbs/${dbName}/collections`, json: true, withCredentials: false}, (error, response, body) =>{
       console.log(body);
       this.setState({collections: body.collections})
     })

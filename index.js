@@ -24,40 +24,46 @@ const port = config.api.port
 
 let dbHostName, dbPortNumber, dbName
 
+let base_url = process.env.BASE_URL || ""
+
 dbHostName = config.database.host
 console.log(`dbHostName=${dbHostName}`)
 dbPortNumber = config.database.port
 dbName = config.database.name
 
-var app = express()
+var app = express(),
+    mongouiRouter = express.Router()
+
+
 app.use(favicon(path.join(__dirname, 'public', 'img', 'favicons', 'favicon.ico')))
 app.use(errorHandler())
 app.use(cors({credential: false}))
 app.use(bodyParser.json())
-app.use(express.static(path.join(__dirname,'public')))
+
+app.use(`/${base_url}`,express.static(path.join(__dirname,'public')))
 
 app.use(compression())
 
-app.get('/api/dbs', function(req, res) {
+mongouiRouter.get('/', function (req, res) {
   if (!req.admin) req.admin = mongoskin.db(`mongodb://${dbHostName}:${dbPortNumber}/${dbName}`).admin()
   req.admin.listDatabases(function(error, dbs) {
     res.json(dbs)
   })
 })
 
-app.param('dbName', function(req, res, next, dbName){
+mongouiRouter.param('dbName', function(req, res, next, dbName){
   var db = mongoskin.db(`mongodb://${dbHostName}:${dbPortNumber}/${dbName}`)
   req.db = db
   req.admin = db.admin()
   return next()
 })
-app.param('collectionName', function(req, res, next, collectionName){
+mongouiRouter.param('collectionName', function(req, res, next, collectionName){
   req.collection = req.db.collection(collectionName)
   return next()
 })
 
 
-app.get('/api/dbs/:dbName/collections', function(req, res, next) {
+mongouiRouter.get('/:dbName/collections', function(req, res, next) {
   req.db.collections(function(e, names) {
     if (!names) next(new Error('No collections'))
     let collections = names.map((collection)=>{
@@ -68,7 +74,7 @@ app.get('/api/dbs/:dbName/collections', function(req, res, next) {
   })
 })
 
-app.get('/api/dbs/:dbName/collections/:collectionName', function(req, res, next) {
+mongouiRouter.get('/:dbName/collections/:collectionName', function(req, res, next) {
   let query = {}
   try {
     query = JSON.parse(req.query.query)
@@ -101,7 +107,7 @@ app.get('/api/dbs/:dbName/collections/:collectionName', function(req, res, next)
   })
 })
 
-app.post('/api/dbs/:dbName/collections/:collectionName', function(req, res) {
+mongouiRouter.post('/:dbName/collections/:collectionName', function(req, res) {
   delete req.body._id
   req.collection.insert(req.body, function(e, results) {
     // console.log('boo', e, results)
@@ -109,7 +115,7 @@ app.post('/api/dbs/:dbName/collections/:collectionName', function(req, res) {
   })
 })
 
-app.delete('/api/dbs/:dbName/collections/:collectionName/:id', function(req, res) {
+mongouiRouter.delete('/:dbName/collections/:collectionName/:id', function(req, res) {
   if (req.body._id && req.body._id != req.params.id) return res.status(400).json({error: 'ID in the body is not matching ID in the URL'})
   delete req.body._id
   req.collection.remove({ _id: mongoDb.ObjectId(req.params.id)}, function(e, results) {
@@ -117,7 +123,7 @@ app.delete('/api/dbs/:dbName/collections/:collectionName/:id', function(req, res
   })
 })
 
-app.patch('/api/dbs/:dbName/collections/:collectionName/:id', function(req, res) {
+mongouiRouter.patch('/:dbName/collections/:collectionName/:id', function(req, res) {
   if (req.body._id && req.body._id != req.params.id) return res.status(400).json({error: 'ID in the body is not matching ID in the URL'})
   delete req.body._id
   req.collection.updateById(req.params.id, {$set: req.body}, function(e, results) {
@@ -126,7 +132,7 @@ app.patch('/api/dbs/:dbName/collections/:collectionName/:id', function(req, res)
   })
 })
 
-
+app.use(`/${base_url}/api/dbs`, mongouiRouter);
 if (require.main === module) {
   app.listen(port, function(){
     if (process.env.NODE_ENV && process.env.NODE_ENV=='dev') {
@@ -140,3 +146,4 @@ if (require.main === module) {
 } else {
   module.exports = app
 }
+
