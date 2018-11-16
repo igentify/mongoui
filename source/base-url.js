@@ -9,8 +9,9 @@ console.log(module.exports.API_URL);
 
 function formatUrlString(uri) {
   var currentLocation = window.location;
-  console.log(`API_URL = ${uri.protocol}://${uri.host}:${uri.port}${currentLocation.pathname}`)
-  return `${uri.protocol}://${uri.host}:${uri.port}${currentLocation.pathname}`;
+  console.log(`uri.host - ${currentLocation.hostname}`)
+  console.log(`API_URL = ${currentLocation.protocol}//${currentLocation.hostname}:${currentLocation.port}${currentLocation.pathname}`)
+  return `${currentLocation.protocol}//${currentLocation.hostname}:${currentLocation.port}${currentLocation.pathname}`;
 }
 
 function inheritUrl(uri){

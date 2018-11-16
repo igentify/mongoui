@@ -11,7 +11,6 @@ require('../public/css/docs.css')
 
 let Docs = React.createClass({
   getInitialState(){
-    console.log('hey')
     return {docs: [], query: {}}
   },
   contextTypes: {

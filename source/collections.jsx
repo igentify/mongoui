@@ -5,7 +5,6 @@ const API_URL = require("./base-url").API_URL;
 
 module.exports = React.createClass({
   getInitialState(){
-    console.log('hey')
     return {collections: []}
   },
   fetch(dbName){
